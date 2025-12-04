@@ -1,5 +1,5 @@
 sources:
-  - name: raw_hiring_data
+  - name: raw
     description: Raw hiring analytics tables from source system
     database: DBT_PROJECT
     schema: RAW
@@ -33,3 +33,21 @@ sources:
         freshness:
           warn_after: {count: 1, period: day}
           error_after: {count: 3, period: day}
+      - name: country_codes
+        description: Raw country codes data
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 3, period: day}
+
+models:
+  - name: stg_country_codes
+    description: Staging model for country codes (short code and name)
+    schema: stg
+    materialized: table
+    columns:
+      - name: country_code
+        description: Two-character country code (first two chars of source `code`)
+        column_type: varchar(2)
+      - name: country_name
+        description: Country name exactly 50 characters (truncated and padded with spaces)
+        column_type: varchar(50)
